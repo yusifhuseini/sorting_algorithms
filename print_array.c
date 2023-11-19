@@ -1,11 +1,11 @@
+#include <stdlib.h>
 #include <stdio.h>
-#include "sort.h"
 
 /**
- *print_array - Prints an array of integers
+ * print_array - Prints an array of integers
  *
- *@array: The array to be printed
- *@size: Number of elements in @array
+ * @array: The array to be printed
+ * @size: Number of elements in @array
  */
 void print_array(const int *array, size_t size)
 {
@@ -19,6 +19,5 @@ void print_array(const int *array, size_t size)
 		printf("%d", array[i]);
 		++i;
 	}
-
 	printf("\n");
 }
