@@ -2,27 +2,14 @@
 #include <stdio.h>
 
 /**
- *swap_elements - Swaps the values of two elements.
- *
- *@element1: Pointer to the first element.
- *@element2: Pointer to the second element.
- */
-void swap_elements(int *element1, int *element2)
-{
-	int temp = *element1;
-	*element1 = *element2;
-	*element2 = temp;
-}
-
-/**
- *bitonic_compare - Compares and swaps elements in a bitonic sequence.
- *
- *@isAscending: Flag indicating the sorting order.
- *@array: Pointer to the array.
+ *bitonic_compare - Compare and swap elements in the bitonic sequence.
+ *@ascending: Flag indicating whether the elements should be in ascending order
+ *@array: Pointer to the array to be compared and swapped.
  *@size: Size of the array.
  */
-void bitonic_compare(char isAscending, int *array, size_t size)
+void bitonic_compare(char ascending, int *array, size_t size)
 {
+	int swap;
 	size_t i, distance;
 
 	distance = size / 2;
@@ -30,9 +17,11 @@ void bitonic_compare(char isAscending, int *array, size_t size)
 
 	while (i < distance)
 	{
-		if ((array[i] > array[i + distance]) == isAscending)
+		if ((array[i] > array[i + distance]) == ascending)
 		{
-			swap_elements(&array[i], &array[i + distance]);
+			swap = array[i];
+			array[i] = array[i + distance];
+			array[i + distance] = swap;
 		}
 
 		i++;
@@ -40,53 +29,49 @@ void bitonic_compare(char isAscending, int *array, size_t size)
 }
 
 /**
- *bitonic_merge - Recursively performs bitonic merge on an array.
- *
- *@isAscending: Flag indicating the sorting order.
- *@array: Pointer to the array.
+ *bitonic_merge - Recursively merge the bitonic sequence.
+ *@ascending: Flag indicating whether the elements should be in ascending order
+ *@array: Pointer to the array to be merged.
  *@size: Size of the array.
  */
-void bitonic_merge(char isAscending, int *array, size_t size)
+void bitonic_merge(char ascending, int *array, size_t size)
 {
 	if (size < 2)
 		return;
 
-	bitonic_compare(isAscending, array, size);
-	bitonic_merge(isAscending, array, size / 2);
-	bitonic_merge(isAscending, array + (size / 2), size / 2);
+	bitonic_compare(ascending, array, size);
+	bitonic_merge(ascending, array, size / 2);
+	bitonic_merge(ascending, array + (size / 2), size / 2);
 }
 
 /**
- *bit_sort - Recursively performs bitonic sort on an array.
- *
- *@isAscending: Flag indicating the sorting order.
- *@array: Pointer to the array.
- *@size: Size of the array.
- *@t: Total size of the original array.
+ *bit_sort - Perform bitonic sort on an array.
+ *@ascending: Flag indicating whether the elements should be in ascending order
+ *@array: Pointer to the array to be sorted.
+ *@size: Size of the array to be sorted.
+ *@total_size: Total size of the original array.
  */
-void bit_sort(char isAscending, int *array, size_t size, size_t t)
+void bit_sort(char ascending, int *array, size_t size, size_t total_size)
 {
 	if (size < 2)
 		return;
 
-	printf("Merging[%lu/%lu] (%s):\n", size, t,
-							(isAscending == 1) ? "UP" : "DOWN");
+	printf("Merging[%lu/%lu] (%s):\n", size, total_size,
+							(ascending == 1) ? "UP" : "DOWN");
 	print_array(array, size);
 
-	bit_sort(1, array, size / 2, t);
-	bit_sort(0, array + (size / 2), size / 2, t);
+	bit_sort(1, array, size / 2, total_size);
+	bit_sort(0, array + (size / 2), size / 2, total_size);
+	bitonic_merge(ascending, array, size);
 
-	bitonic_merge(isAscending, array, size);
-
-	printf("Result[%lu/%lu] (%s):\n", size, t,
-							(isAscending == 1) ? "UP" : "DOWN");
+	printf("Result[%lu/%lu] (%s):\n", size, total_size,
+							(ascending == 1) ? "UP" : "DOWN");
 	print_array(array, size);
 }
 
 /**
- *bitonic_sort - Sorts an array using bitonic sort algorithm.
- *
- *@array: Pointer to the array.
+ *bitonic_sort - Sort an array using the bitonic sort algorithm.
+ *@array: Pointer to the array to be sorted.
  *@size: Size of the array.
  */
 void bitonic_sort(int *array, size_t size)
