@@ -34,6 +34,7 @@ void bitonic_merge(char up, int *array, size_t size)
 {
 	if (size < 2)
 		return;
+
 	bitonic_compare(up, array, size);
 	bitonic_merge(up, array, size / 2);
 	bitonic_merge(up, array + (size / 2), size / 2);
@@ -50,14 +51,16 @@ void bit_sort(char up, int *array, size_t size, size_t t)
 {
 	if (size < 2)
 		return;
+
 	printf("Merging [%lu/%lu] (%s):\n", size, t, (up == 1) ? "UP" : "DOWN");
 	print_array(array, size);
+
 	bit_sort(1, array, size / 2, t);
 	bit_sort(0, array + (size / 2), size / 2, t);
 	bitonic_merge(up, array, size);
+
 	printf("Result [%lu/%lu] (%s):\n", size, t, (up == 1) ? "UP" : "DOWN");
 	print_array(array, size);
-
 }
 
 /**
@@ -69,5 +72,6 @@ void bitonic_sort(int *array, size_t size)
 {
 	if (array == NULL || size < 2)
 		return;
+
 	bit_sort(1, array, size, size);
 }
