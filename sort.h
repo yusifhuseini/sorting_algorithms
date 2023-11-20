@@ -38,7 +38,7 @@ typedef struct deck_node_s
 int getMax(int *array, size_t size);
 int hoare_partition(int *array, int low, int high, size_t size);
 void bitonic_sort(int *array, size_t size);
-void bubble_sort(int *array, size_t size);
+/* void bubble_sort(int *array, size_t size); */
 void cocktail_sort_list(listint_t **list);
 void counting_sort(int *array, size_t size);
 void countingSort(int *array, size_t size, int exp);
