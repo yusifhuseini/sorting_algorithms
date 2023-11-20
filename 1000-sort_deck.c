@@ -1,112 +1,59 @@
 #include "deck.h"
 
 /**
- * sort_deck - sorts a deck of card
- * @deck: doubly linked list to sort
+ *compare_cards - Compare two cards for sorting
+ *@a: First card
+ *@b: Second card
+ *Return: Integer less than, equal to, or greater than zero if a is found,
+ *respectively, to be less than, to match, or be greater than b.
+ */
+int compare_cards(const void *a, const void *b)
+{
+	const deck_node_t *node_a = *(const deck_node_t **) a;
+	const deck_node_t *node_b = *(const deck_node_t **) b;
+
+	if (node_a->card->kind != node_b->card->kind)
+		return (node_a->card->kind - node_b->card->kind);
+	return (strcmp(node_a->card->value, node_b->card->value));
+}
+
+/**
+ *sort_deck - Sorts a deck of cards
+ *@deck: Pointer to the deck to be sorted
  */
 void sort_deck(deck_node_t **deck)
 {
-	deck_node_t *curr;
-	size_t len;
-	deck_node_t *one, *two, *three, *four;
+	size_t i;
+	deck_node_t **array;
+	deck_node_t *current;
 
-	len = list_len_deck(*deck);
-
-	if (!deck || !*deck || len < 2)
+	if (!deck || !*deck || !(*deck)->next)
 		return;
 
-	curr = *deck;
-	while (curr)
+	current = *deck;
+
+	/*Create an array of deck nodes */
+	array = malloc(sizeof(deck_node_t *) * 52);
+	if (!array)
+		return;
+
+	for (i = 0; i < 52 && current; ++i)
 	{
-		if (curr->prev && card_value(curr) < card_value(curr->prev))
-		{
-			one = curr->prev->prev;
-			two = curr->prev;
-			three = curr;
-			four = curr->next;
-
-			two->next = four;
-			if (four)
-				four->prev = two;
-			three->next = two;
-			three->prev = one;
-			if (one)
-				one->next = three;
-			else
-				*deck = three;
-			two->prev = three;
-			curr = *deck;
-			continue;
-		}
-		else
-			curr = curr->next;
-	}
-}
-
-/**
- * card_value - returns the value of a card
- * @node: card in a deck
- *
- * Return: value between 1 and 52
- */
-int card_value(deck_node_t *node)
-{
-	char *val[13] = {"Ace", "2", "3", "4", "5", "6",
-		"7", "8", "9", "10", "Jack", "Queen", "King"};
-	char *kinds[4] = {"SPADE", "HEART", "CLUB", "DIAMOND"};
-	int i, kind_val = 0;
-
-	for (i = 1; i <= 13; i++)
-	{
-		if (!_strcmp(node->card->value, val[i - 1]))
-			kind_val = i;
+		array[i] = current;
+		current = current->next;
 	}
 
-	for (i = 1; i <= 4; i++)
+	/*Sort the array of deck nodes */
+	qsort(array, i, sizeof(deck_node_t *), compare_cards);
+
+	/*Update the deck with the sorted nodes */
+	*deck = array[0];
+	for (i = 0; i < 52 - 1; ++i)
 	{
-		if (!_strcmp(kinds[node->card->kind], kinds[i - 1]))
-			kind_val = kind_val + (13 * i);
+		array[i]->next = array[i + 1];
+		array[i + 1]->prev = array[i];
 	}
 
-	return (kind_val);
-}
-
-/**
- * _strcmp - compares two strings
- * @s1: first string to compare
- * @s2: second string to compare
- *
- * Return: less than 0 if s1 is less than s2, 0 if they're equal,
- * more than 0 if s1 is greater than s2
- */
-int _strcmp(const char *s1, const char *s2)
-{
-	while (*s1 == *s2)
-	{
-		if (*s1 == '\0')
-		{
-			return (0);
-		}
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
-}
-
-/**
- * list_len_deck - function returns length of list
- * @list: head of list
- *
- * Return: length
- */
-size_t list_len_deck(deck_node_t *list)
-{
-	size_t len = 0;
-
-	while (list)
-	{
-		len++;
-		list = list->next;
-	}
-	return (len);
+	array[51]->next = NULL;
+	free(array);
 }
