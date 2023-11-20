@@ -9,17 +9,17 @@
  */
 void bitonic_compare(char up, int *array, size_t size)
 {
-	size_t i, dist;
 	int swap;
+	size_t i, distance;
 
-	dist = size / 2;
-	for (i = 0; i < dist; i++)
+	distance = size / 2;
+	for (i = 0; i < distance; i++)
 	{
-		if ((array[i] > array[i + dist]) == up)
+		if ((array[i] > array[i + distance]) == up)
 		{
 			swap = array[i];
-			array[i] = array[i + dist];
-			array[i + dist] = swap;
+			array[i] = array[i + distance];
+			array[i + distance] = swap;
 		}
 	}
 }
