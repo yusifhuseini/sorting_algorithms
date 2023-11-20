@@ -27,12 +27,12 @@ typedef struct listint_s
  *@prev: Pointer to the previous node in the deck
  *@next: Pointer to the next node in the deck
  */
-typedef struct deck_node_s
-{
-        int card;
-        struct deck_node_s *prev;
-        struct deck_node_s *next;
-} deck_node_t;
+//typedef struct deck_node_s
+//{
+ //       int card;
+   //     struct deck_node_s *prev;
+     //   struct deck_node_s *next;
+//} deck_node_t;
 
 /*Function prototypes */
 int getMax(int *array, size_t size);
