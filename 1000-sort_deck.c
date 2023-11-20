@@ -1,5 +1,4 @@
 #include "deck.h"
-#include <stddef.h>
 
 /**
  *sort_deck - Sorts a deck of cards in ascending order based on their values.
@@ -11,13 +10,10 @@ void sort_deck(deck_node_t **deck)
 	size_t len;
 	deck_node_t *curr, *one, *two, *three, *four;
 
-	/*Check if the deck is empty or has only one card */
-	if (!deck || !*deck)
-		return;
-
 	len = list_len_deck(*deck);
 
-	if (len < 2)
+	/*Check if the deck is empty or has only one card */
+	if (!deck || !*deck || len < 2)
 		return;
 
 	/*Bubble sort algorithm to sort the deck */
@@ -55,26 +51,23 @@ void sort_deck(deck_node_t **deck)
  */
 int card_value(deck_node_t *node)
 {
-	char *val[13] = { "Ace", "2", "3", "4", "5", "6",
-		"7", "8", "9", "10", "Jack", "Queen", "King" };
-
-	char *kinds[4] = { "SPADE", "HEART", "CLUB", "DIAMOND" };
-
-	int i = 1, kind_val = 0;
+	int i, kind_val = 0;
+	char *kinds[4] = {"SPADE", "HEART", "CLUB", "DIAMOND"};
+	char *val[13] = {"Ace", "2", "3", "4", "5", "6",
+		"7", "8", "9", "10", "Jack", "Queen", "King"};
 
 	/*Determine the rank value */
-	while (i <= 13 && _strcmp(node->card->value, val[i - 1]) != 0)
+	for (i = 1; i <= 13; i++)
 	{
-		kind_val = i;
-		i++;
+		if (!_strcmp(node->card->value, val[i - 1]))
+			kind_val = i;
 	}
 
 	/*Determine the suit value */
-	i = 1;
-	while (i <= 4 && _strcmp(kinds[node->card->kind], kinds[i - 1]) != 0)
+	for (i = 1; i <= 4; i++)
 	{
-		kind_val = kind_val + (13 * i);
-		i++;
+		if (!_strcmp(kinds[node->card->kind], kinds[i - 1]))
+			kind_val = kind_val + (13 * i);
 	}
 
 	return (kind_val);
@@ -83,22 +76,24 @@ int card_value(deck_node_t *node)
 /**
  *_strcmp - Compares two strings lexicographically.
  *
- *@str1: The first string.
- *@str2: The second string.
+ *@s1: The first string.
+ *@s2: The second string.
  *
  *Return: An integer greater than, equal to, or less than 0, according to
  *        the first string is greater than, equal to, or less than the second.
  */
-int _strcmp(const char *str1, const char *str2)
+int _strcmp(const char *s1, const char *s2)
 {
-	do {
-		if (*str1 == '\0')
+	while (*s1 == *s2)
+	{
+		if (*s1 == '\0')
 		{
 			return (0);
 		}
-	} while (*str1++ == *str2++);
-
-	return (*str1 - *str2);
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
 }
 
 /**
@@ -113,10 +108,10 @@ size_t list_len_deck(deck_node_t *list)
 	size_t len = 0;
 
 	/*Count the number of nodes in the linked list */
-	do {
+	while (list)
+	{
 		len++;
 		list = list->next;
-	} while (list);
-
+	}
 	return (len);
 }
